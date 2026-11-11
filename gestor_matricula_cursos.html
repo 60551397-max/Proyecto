@@ -4,206 +4,373 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestor de matrícula y seguimiento académico</title>
+<title>EUROPA UNIVERSITY | Sistema Académico</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #080610;
+  --panel: #110c20;
+  --panel2: #18102b;
+  --purple: #a855f7;
+  --violet: #7c3aed;
+  --pink: #d946ef;
+  --light: #e9d5ff;
+  --muted: #a99abb;
+  --border: rgba(168,85,247,.28);
+  --glow: 0 0 18px rgba(168,85,247,.24);
+  --green: #4ade80;
+  --red: #fb7185;
+}
+
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background: #f1f5f9;
-  color: #172033;
   padding: 28px 16px;
+  color: #f5efff;
+  font-family: 'Inter', Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(124,58,237,.18), transparent 38%),
+    radial-gradient(ellipse at 90% 25%, rgba(217,70,239,.10), transparent 35%),
+    linear-gradient(145deg,#080610,#0d0819 55%,#080610);
 }
 
-.container { max-width: 1000px; margin: auto; }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: .18;
+  background-image:
+    linear-gradient(rgba(168,85,247,.08) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(168,85,247,.08) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
 
-header { margin-bottom: 22px; }
+.container {
+  max-width: 1150px;
+  margin: auto;
+}
 
-h1 { margin: 0 0 8px; font-size: clamp(24px,4vw,34px); }
+header {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  background: linear-gradient(120deg,rgba(24,16,43,.94),rgba(12,8,23,.94));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--glow);
+  position: relative;
+  overflow: hidden;
+}
 
-header p { color: #64748b; }
+header::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg,transparent,var(--purple),var(--pink),transparent);
+}
+
+.logo {
+  width: 90px;
+  height: 90px;
+  min-width: 90px;
+  border: 1px solid rgba(192,132,252,.65);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle,rgba(168,85,247,.24),rgba(20,10,38,.8));
+  box-shadow: 0 0 25px rgba(168,85,247,.35), inset 0 0 20px rgba(168,85,247,.15);
+}
+
+.logo svg {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 0 7px #c084fc);
+}
+
+.brand {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(17px,3vw,25px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #e9d5ff;
+  text-shadow: 0 0 15px rgba(192,132,252,.7);
+}
+
+.brand span { color: var(--pink); }
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 9px;
+  line-height: 1.6;
+}
+
+.header-tag {
+  margin-left: auto;
+  color: #d8b4fe;
+  border: 1px solid var(--border);
+  background: rgba(168,85,247,.08);
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 10px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
 
 .panel {
-  background: white;
-  border: 1px solid #e2e8f0;
+  background: linear-gradient(145deg,rgba(25,16,43,.95),rgba(13,9,25,.96));
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 22px;
-  margin-bottom: 18px;
-  box-shadow: 0 8px 24px rgba(15,23,42,.05);
+  margin-bottom: 19px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.24), var(--glow);
+  position: relative;
+  overflow: hidden;
 }
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 90px;
+  height: 2px;
+  background: var(--pink);
+  box-shadow: 0 0 12px var(--pink);
+}
+
+h1,h2,h3 { margin-top: 0; }
+
+h2 {
+  font-size: 18px;
+  letter-spacing: .3px;
+  color: #e9d5ff;
+  margin-bottom: 17px;
+}
+
+h3 { color: #d8b4fe; }
 
 .summary {
   display: grid;
   grid-template-columns: repeat(3,1fr);
-  gap: 12px;
+  gap: 14px;
 }
 
 .stat {
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 16px;
+  padding: 19px;
+  border-radius: 13px;
+  background: linear-gradient(135deg,rgba(168,85,247,.12),rgba(255,255,255,.015));
+  border: 1px solid rgba(168,85,247,.23);
+  transition: .25s;
+}
+
+.stat:hover {
+  transform: translateY(-3px);
+  border-color: var(--pink);
+  box-shadow: 0 0 20px rgba(217,70,239,.15);
 }
 
 .stat span {
   display: block;
-  color: #64748b;
-  font-size: 13px;
-  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 9px;
 }
 
-.stat strong { font-size: 25px; }
+.stat strong {
+  font-family: 'Orbitron',sans-serif;
+  font-size: 26px;
+  color: #e9d5ff;
+  text-shadow: 0 0 12px rgba(168,85,247,.5);
+}
 
 .progress {
   height: 9px;
-  background: #e2e8f0;
+  background: #211532;
   border-radius: 20px;
   overflow: hidden;
-  margin-top: 15px;
+  margin-top: 17px;
+  border: 1px solid rgba(168,85,247,.15);
 }
 
 .progress div {
   height: 100%;
   width: 0;
-  background: #2563eb;
-  transition: width .2s;
+  background: linear-gradient(90deg,var(--violet),var(--pink));
+  box-shadow: 0 0 15px var(--purple);
+  transition: width .3s;
 }
-
-h2 { font-size: 19px; margin: 0 0 16px; }
 
 form {
   display: grid;
   grid-template-columns: 1fr 150px auto;
-  gap: 10px;
+  gap: 11px;
 }
 
 input {
   width: 100%;
-  border: 1px solid #cbd5e1;
+  background: #0c0816;
+  color: #f5efff;
+  border: 1px solid rgba(168,85,247,.3);
   border-radius: 9px;
   padding: 12px;
-  font-size: 15px;
+  font-size: 14px;
   outline: none;
+  transition: .2s;
 }
 
+input::placeholder { color: #766888; }
+
 input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px #dbeafe;
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(168,85,247,.12),0 0 14px rgba(168,85,247,.18);
 }
 
 button {
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 9px;
-  padding: 11px 15px;
+  padding: 11px 14px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
+  transition: .22s;
 }
 
-.primary { background: #2563eb; color: white; }
-.secondary { background: #e2e8f0; color: #1e293b; }
-.danger { background: #fee2e2; color: #b91c1c; }
-.notes-btn { background: #dbeafe; color: #1d4ed8; }
+button:hover { transform: translateY(-2px); }
 
-.actions {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
+.primary {
+  color: white;
+  background: linear-gradient(110deg,#7c3aed,#a855f7,#c026d3);
+  box-shadow: 0 0 15px rgba(168,85,247,.3);
 }
+
+.primary:hover { box-shadow: 0 0 23px rgba(217,70,239,.5); }
+
+.secondary {
+  background: rgba(168,85,247,.12);
+  border-color: rgba(168,85,247,.3);
+  color: #e9d5ff;
+}
+
+.danger {
+  background: rgba(251,113,133,.1);
+  border-color: rgba(251,113,133,.25);
+  color: #fda4af;
+}
+
+.notes-btn {
+  background: rgba(192,132,252,.14);
+  border-color: rgba(192,132,252,.35);
+  color: #e9d5ff;
+}
+
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
 .message {
   margin-top: 12px;
   min-height: 20px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.message.error { color: #b91c1c; }
-.message.success { color: #15803d; }
+.message.error { color: var(--red); }
+.message.success { color: var(--green); }
 
 table { width: 100%; border-collapse: collapse; }
 
-th, td {
-  padding: 13px 10px;
+th,td {
+  padding: 14px 10px;
   text-align: left;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid rgba(168,85,247,.13);
 }
 
 th {
-  color: #64748b;
-  font-size: 12px;
+  color: #c4a6e6;
+  font-size: 11px;
   text-transform: uppercase;
+  letter-spacing: .7px;
+  background: rgba(168,85,247,.07);
 }
+
+td { font-size: 13px; color: #e8def5; }
+
+tbody tr { transition: .2s; }
+tbody tr:hover { background: rgba(168,85,247,.055); }
 
 .empty {
   text-align: center;
-  color: #64748b;
+  color: var(--muted);
   padding: 28px 10px;
 }
 
-.hint {
-  color: #64748b;
-  font-size: 13px;
-  margin: 12px 0 0;
-}
+.hint { color: var(--muted); font-size: 12px; margin: 12px 0 0; }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 
-.notes-grid {
+.notes-grid,.weights {
   display: grid;
   grid-template-columns: repeat(4,1fr);
   gap: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .note-field {
-  background: #f8fafc;
-  padding: 12px;
-  border-radius: 10px;
+  background: rgba(168,85,247,.07);
+  border: 1px solid rgba(168,85,247,.2);
+  padding: 13px;
+  border-radius: 11px;
 }
 
 .note-field label {
   display: block;
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 8px;
+  color: #d8b4fe;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 9px;
 }
 
 .note-field small {
   display: block;
-  color: #64748b;
+  color: var(--muted);
   margin-top: 5px;
 }
 
-.weights {
-  display: grid;
-  grid-template-columns: repeat(4,1fr);
-  gap: 12px;
-  margin: 15px 0;
-}
-
 .result {
-  background: #f8fafc;
-  padding: 18px;
+  background: linear-gradient(120deg,rgba(124,58,237,.12),rgba(217,70,239,.06));
+  border: 1px solid rgba(168,85,247,.28);
+  padding: 19px;
   border-radius: 12px;
-  margin-top: 15px;
+  margin-top: 18px;
 }
 
-.result strong { font-size: 27px; }
+.result strong {
+  font-family: 'Orbitron',sans-serif;
+  font-size: 27px;
+  color: #e9d5ff;
+}
 
 .status {
   display: inline-block;
-  padding: 7px 12px;
+  padding: 7px 13px;
   border-radius: 20px;
-  font-weight: bold;
-  font-size: 13px;
-  margin-top: 10px;
+  font-weight: 800;
+  font-size: 11px;
+  margin-top: 9px;
+  letter-spacing: .5px;
 }
 
-.aprobado { background: #dcfce7; color: #15803d; }
-.desaprobado { background: #fee2e2; color: #b91c1c; }
-.pendiente { background: #fef3c7; color: #92400e; }
+.aprobado { background: rgba(74,222,128,.13); color: #4ade80; border: 1px solid rgba(74,222,128,.3); }
+.desaprobado { background: rgba(251,113,133,.13); color: #fb7185; border: 1px solid rgba(251,113,133,.3); }
 
 .section-title {
   display: flex;
@@ -213,14 +380,40 @@ th {
   flex-wrap: wrap;
 }
 
-@media(max-width:650px) {
-  form { grid-template-columns: 1fr 1fr; }
-  form input:first-child { grid-column: 1/-1; }
-  form button { grid-column: 1/-1; }
+.course-label {
+  color: #d8b4fe;
+  border-left: 3px solid var(--pink);
+  padding: 9px 12px;
+  background: rgba(168,85,247,.07);
+  border-radius: 0 8px 8px 0;
+}
+
+footer {
+  text-align: center;
+  color: #806d97;
+  font-size: 10px;
+  letter-spacing: 2px;
+  padding: 20px 8px;
+}
+
+footer span { color: var(--pink); }
+
+@media(max-width:750px) {
+  header { flex-wrap: wrap; }
+  .header-tag { margin-left: 0; }
   .summary { grid-template-columns: 1fr; }
-  .notes-grid, .weights { grid-template-columns: repeat(2,1fr); }
-  table { font-size: 12px; }
-  th,td { padding: 9px 5px; }
+  .notes-grid,.weights { grid-template-columns: repeat(2,1fr); }
+  form { grid-template-columns: 1fr 1fr; }
+  form input:first-child,form button { grid-column: 1/-1; }
+  .table-wrap { overflow-x: auto; }
+  table { min-width: 690px; }
+}
+
+@media(max-width:420px) {
+  body { padding: 15px 10px; }
+  .panel { padding: 16px; }
+  .logo { width: 70px; height: 70px; min-width: 70px; }
+  .logo svg { width: 50px; height: 50px; }
 }
 </style>
 </head>
@@ -229,22 +422,44 @@ th {
 <div class="container">
 
 <header>
-  <h1>Gestor de matrícula y seguimiento académico</h1>
-  <p>Administra tus cursos, créditos y calificaciones académicas.</p>
+  <div class="logo" aria-label="Logo de Europa University">
+    <svg viewBox="0 0 100 100" fill="none">
+      <path d="M50 7 L80 20 V48 C80 68 67 83 50 92 C33 83 20 68 20 48 V20 Z"
+        stroke="#d8b4fe" stroke-width="2.5"/>
+      <path d="M32 39 H68 M36 39 V64 M46 39 V64 M56 39 V64 M66 39 V64 M29 67 H71"
+        stroke="#e9d5ff" stroke-width="3" stroke-linecap="round"/>
+      <path d="M29 36 L50 23 L71 36 Z" stroke="#d946ef" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M40 75 H60" stroke="#d946ef" stroke-width="2"/>
+      <path d="M50 12 L53 18 L60 19 L55 24 L56 31 L50 27 L44 31 L45 24 L40 19 L47 18 Z"
+        fill="#d8b4fe"/>
+      <circle cx="12" cy="40" r="2" fill="#d946ef"/>
+      <circle cx="88" cy="40" r="2" fill="#d946ef"/>
+    </svg>
+  </div>
+
+  <div>
+    <div class="brand">EUROPA <span>UNIVERSITY</span></div>
+    <div class="subtitle">
+      SISTEMA INTEGRAL DE GESTIÓN ACADÉMICA<br>
+      Excelencia académica · Innovación · Futuro
+    </div>
+  </div>
+
+  <div class="header-tag">✦ CAMPUS DIGITAL</div>
 </header>
 
 <section class="panel">
   <div class="summary">
     <div class="stat">
-      <span>Cursos matriculados</span>
+      <span>CURSOS MATRICULADOS</span>
       <strong id="totalCursos">0</strong>
     </div>
     <div class="stat">
-      <span>Créditos acumulados</span>
+      <span>CRÉDITOS ACUMULADOS</span>
       <strong id="totalCreditos">0 / 20</strong>
     </div>
     <div class="stat">
-      <span>Créditos disponibles</span>
+      <span>CRÉDITOS DISPONIBLES</span>
       <strong id="disponibles">20</strong>
     </div>
   </div>
@@ -252,28 +467,30 @@ th {
 </section>
 
 <section class="panel">
-  <h2 id="formTitle">Agregar un curso</h2>
+  <h2>⌘ &nbsp; GESTIÓN DE MATRÍCULA</h2>
+
+  <h3 id="formTitle">Agregar un curso</h3>
 
   <form id="courseForm">
     <input id="nombre" type="text"
       placeholder="Nombre del curso" maxlength="70" required>
 
     <input id="creditos" type="number"
-      placeholder="Créditos" min="1" max="20"
-      step="1" required>
+      placeholder="Créditos" min="1" max="20" step="1" required>
 
     <button class="primary" id="submitBtn" type="submit">
-      Agregar curso
+      ＋ Agregar curso
     </button>
   </form>
 
-  <div class="message" id="mensaje" role="status"></div>
+  <div class="message" id="mensaje" role="status" aria-live="polite"></div>
+  <p class="hint">◈ Límite académico permitido: 20 créditos.</p>
 </section>
 
 <section class="panel">
-  <h2>Lista de cursos matriculados</h2>
+  <h2>▤ &nbsp; REGISTRO DE ASIGNATURAS</h2>
 
-  <div style="overflow-x:auto">
+  <div class="table-wrap">
     <table>
       <thead>
         <tr>
@@ -290,96 +507,90 @@ th {
   </div>
 </section>
 
-<!-- SECCIÓN DE NOTAS -->
-
 <section class="panel hidden" id="notesPanel">
-
   <div class="section-title">
-    <h2>Seguimiento académico</h2>
-    <button class="secondary" onclick="cerrarNotas()">Cerrar</button>
+    <h2>✧ SEGUIMIENTO ACADÉMICO</h2>
+    <button class="secondary" onclick="cerrarNotas()">✕ Cerrar</button>
   </div>
 
-  <p id="cursoSeleccionado"></p>
+  <p id="cursoSeleccionado" class="course-label"></p>
 
-  <h3>Registro de calificaciones</h3>
+  <h3>01 / Registro de calificaciones</h3>
 
   <div class="notes-grid">
     <div class="note-field">
       <label for="C1">C1 - Primer consolidado</label>
-      <input type="number" id="C1" min="0" max="20"
-        step="0.01" placeholder="0 - 20">
+      <input type="number" id="C1" min="0" max="20" step="0.01" placeholder="0 - 20">
     </div>
-
     <div class="note-field">
       <label for="EP">EP - Evaluación parcial</label>
-      <input type="number" id="EP" min="0" max="20"
-        step="0.01" placeholder="0 - 20">
+      <input type="number" id="EP" min="0" max="20" step="0.01" placeholder="0 - 20">
     </div>
-
     <div class="note-field">
       <label for="C2">C2 - Segundo consolidado</label>
-      <input type="number" id="C2" min="0" max="20"
-        step="0.01" placeholder="0 - 20">
+      <input type="number" id="C2" min="0" max="20" step="0.01" placeholder="0 - 20">
     </div>
-
     <div class="note-field">
       <label for="EF">EF - Evaluación final</label>
-      <input type="number" id="EF" min="0" max="20"
-        step="0.01" placeholder="0 - 20">
+      <input type="number" id="EF" min="0" max="20" step="0.01" placeholder="0 - 20">
     </div>
   </div>
 
-  <h3>Porcentajes de evaluación</h3>
-  <p class="hint">
-    Configura los porcentajes establecidos en el sílabo de tu asignatura.
-    La suma debe ser exactamente 100%.
-  </p>
+  <h3>02 / Configuración de ponderaciones</h3>
+  <p class="hint">Configura los pesos indicados en el sílabo. La suma debe ser 100%.</p>
 
   <div class="weights">
     <div class="note-field">
-      <label for="pesoC1">Peso C1 (%)</label>
-      <input type="number" id="pesoC1" min="0" max="100" value="25">
+      <label for="pesoC1">PESO C1 (%)</label>
+      <input type="number" id="pesoC1" min="0" max="100" step="1" value="25">
     </div>
-
     <div class="note-field">
-      <label for="pesoEP">Peso EP (%)</label>
-      <input type="number" id="pesoEP" min="0" max="100" value="25">
+      <label for="pesoEP">PESO EP (%)</label>
+      <input type="number" id="pesoEP" min="0" max="100" step="1" value="25">
     </div>
-
     <div class="note-field">
-      <label for="pesoC2">Peso C2 (%)</label>
-      <input type="number" id="pesoC2" min="0" max="100" value="25">
+      <label for="pesoC2">PESO C2 (%)</label>
+      <input type="number" id="pesoC2" min="0" max="100" step="1" value="25">
     </div>
-
     <div class="note-field">
-      <label for="pesoEF">Peso EF (%)</label>
-      <input type="number" id="pesoEF" min="0" max="100" value="25">
+      <label for="pesoEF">PESO EF (%)</label>
+      <input type="number" id="pesoEF" min="0" max="100" step="1" value="25">
     </div>
   </div>
 
   <div id="sumaPesos" class="hint">Total de porcentajes: 100%</div>
 
   <button class="primary" id="guardarNotas">
-    Guardar calificaciones
+    ✓ Guardar calificaciones
   </button>
 
-  <div id="mensajeNotas" class="message"></div>
+  <div id="mensajeNotas" class="message" role="status"></div>
 
   <div class="result" id="resultado">
-    <h3>Resultado académico</h3>
-    <p>Ingresa todas las notas para calcular el promedio final.</p>
+    <h3>03 / Resultado académico</h3>
+    <p>Ingresa las notas para calcular el promedio final.</p>
   </div>
-
 </section>
+
+<footer>
+  <span>✦</span> EUROPA UNIVERSITY · EXCELENCIA ACADÉMICA, SIN FRONTERAS <span>✦</span>
+</footer>
 
 </div>
 
 <script>
-
 const LIMITE_CREDITOS = 20;
 const NOTA_MINIMA = 10.50;
 
-let cursos = JSON.parse(localStorage.getItem('cursosUC')) || [];
+let cursos = [];
+
+try {
+  const datos = JSON.parse(localStorage.getItem('cursosUC'));
+  if (Array.isArray(datos)) cursos = datos;
+} catch (error) {
+  cursos = [];
+}
+
 let editando = null;
 let cursoActual = null;
 
@@ -389,7 +600,11 @@ const creditosInput = document.getElementById('creditos');
 const mensaje = document.getElementById('mensaje');
 
 function guardarDatos() {
-  localStorage.setItem('cursosUC', JSON.stringify(cursos));
+  try {
+    localStorage.setItem('cursosUC', JSON.stringify(cursos));
+  } catch (error) {
+    mostrarMensaje('No se pudieron guardar los datos en el navegador.', 'error');
+  }
 }
 
 function totalDeCreditos(lista = cursos) {
@@ -405,41 +620,47 @@ function actualizarResumen() {
   const total = totalDeCreditos();
 
   document.getElementById('totalCursos').textContent = cursos.length;
-  document.getElementById('totalCreditos').textContent =
-    `${total} / ${LIMITE_CREDITOS}`;
-
-  document.getElementById('disponibles').textContent =
-    LIMITE_CREDITOS - total;
-
+  document.getElementById('totalCreditos').textContent = `${total} / ${LIMITE_CREDITOS}`;
+  document.getElementById('disponibles').textContent = LIMITE_CREDITOS - total;
   document.getElementById('barra').style.width =
     `${Math.min(total / LIMITE_CREDITOS * 100, 100)}%`;
 }
 
-function calcularPromedio(notas) {
-  if (!notas || Object.values(notas).some(n => n === null || n === undefined))
-    return null;
+// CÁLCULO DEL PROMEDIO PONDERADO
 
-  const sumaPesos =
-    notas.pesos.C1 + notas.pesos.EP +
-    notas.pesos.C2 + notas.pesos.EF;
+function calcularPromedio(notas) {
+  if (!notas) return null;
+
+  const componentes = ['C1', 'EP', 'C2', 'EF'];
+
+  for (const componente of componentes) {
+    if (
+      notas[componente] === null ||
+      notas[componente] === undefined ||
+      !Number.isFinite(Number(notas[componente]))
+    ) return null;
+  }
+
+  if (!notas.pesos) return null;
+
+  const pesos = notas.pesos;
+
+  const sumaPesos = componentes.reduce(
+    (total, componente) => total + Number(pesos[componente]), 0
+  );
 
   if (sumaPesos !== 100) return null;
 
-  const promedio =
-    (notas.C1 * notas.pesos.C1 +
-     notas.EP * notas.pesos.EP +
-     notas.C2 * notas.pesos.C2 +
-     notas.EF * notas.pesos.EF) / 100;
-
-  return promedio;
+  return componentes.reduce(
+    (total, componente) =>
+      total + Number(notas[componente]) * Number(pesos[componente]),
+    0
+  ) / 100;
 }
 
 function obtenerEstado(promedio) {
   if (promedio === null) return 'Pendiente';
-
-  return promedio >= NOTA_MINIMA
-    ? 'Aprobado'
-    : 'Desaprobado';
+  return promedio >= NOTA_MINIMA ? 'Aprobado' : 'Desaprobado';
 }
 
 function mostrarCursos() {
@@ -448,20 +669,17 @@ function mostrarCursos() {
 
   if (cursos.length === 0) {
     tbody.innerHTML = `
-      <tr>
-        <td colspan="6" class="empty">
-          Todavía no hay cursos matriculados.
-        </td>
-      </tr>`;
+      <tr><td colspan="6" class="empty">
+        ✧ Todavía no hay cursos matriculados.
+      </td></tr>`;
   }
 
   cursos.forEach((curso, indice) => {
     const promedio = calcularPromedio(curso.notas);
     const estado = obtenerEstado(promedio);
-
     const fila = document.createElement('tr');
 
-    const datos = [
+    const valores = [
       indice + 1,
       curso.nombre,
       `${curso.creditos} créditos`,
@@ -469,15 +687,15 @@ function mostrarCursos() {
       estado
     ];
 
-    datos.forEach((dato, posicion) => {
+    valores.forEach((valor, posicion) => {
       const td = document.createElement('td');
-      td.textContent = dato;
+      td.textContent = valor;
 
       if (posicion === 4) {
-        td.style.color =
-          estado === 'Aprobado' ? '#15803d' :
-          estado === 'Desaprobado' ? '#b91c1c' : '#92400e';
         td.style.fontWeight = 'bold';
+        td.style.color =
+          estado === 'Aprobado' ? '#4ade80' :
+          estado === 'Desaprobado' ? '#fb7185' : '#d8b4fe';
       }
 
       fila.appendChild(td);
@@ -487,22 +705,22 @@ function mostrarCursos() {
     const contenedor = document.createElement('div');
     contenedor.className = 'actions';
 
-    const notasBtn = document.createElement('button');
-    notasBtn.className = 'notes-btn';
-    notasBtn.textContent = 'Notas';
-    notasBtn.onclick = () => abrirNotas(indice);
+    const btnNotas = document.createElement('button');
+    btnNotas.className = 'notes-btn';
+    btnNotas.textContent = 'Notas';
+    btnNotas.onclick = () => abrirNotas(indice);
 
-    const editar = document.createElement('button');
-    editar.className = 'secondary';
-    editar.textContent = 'Editar';
-    editar.onclick = () => prepararEdicion(indice);
+    const btnEditar = document.createElement('button');
+    btnEditar.className = 'secondary';
+    btnEditar.textContent = 'Editar';
+    btnEditar.onclick = () => prepararEdicion(indice);
 
-    const eliminar = document.createElement('button');
-    eliminar.className = 'danger';
-    eliminar.textContent = 'Eliminar';
-    eliminar.onclick = () => eliminarCurso(indice);
+    const btnEliminar = document.createElement('button');
+    btnEliminar.className = 'danger';
+    btnEliminar.textContent = 'Eliminar';
+    btnEliminar.onclick = () => eliminarCurso(indice);
 
-    contenedor.append(notasBtn, editar, eliminar);
+    contenedor.append(btnNotas, btnEditar, btnEliminar);
     acciones.appendChild(contenedor);
     fila.appendChild(acciones);
     tbody.appendChild(fila);
@@ -515,11 +733,8 @@ function limpiarFormulario() {
   form.reset();
   editando = null;
 
-  document.getElementById('formTitle').textContent =
-    'Agregar un curso';
-
-  document.getElementById('submitBtn').textContent =
-    'Agregar curso';
+  document.getElementById('formTitle').textContent = 'Agregar un curso';
+  document.getElementById('submitBtn').textContent = '＋ Agregar curso';
 }
 
 form.addEventListener('submit', (evento) => {
@@ -541,11 +756,7 @@ form.addEventListener('submit', (evento) => {
   const nuevaLista = [...cursos];
 
   if (editando === null) {
-    nuevaLista.push({
-      nombre,
-      creditos,
-      notas: null
-    });
+    nuevaLista.push({ nombre, creditos, notas: null });
   } else {
     nuevaLista[editando] = {
       ...cursos[editando],
@@ -558,20 +769,20 @@ form.addEventListener('submit', (evento) => {
 
   if (nuevoTotal > LIMITE_CREDITOS) {
     mostrarMensaje(
-      `Alcanzarías ${nuevoTotal} créditos. El máximo permitido es 20.`,
+      `No puedes matricularte: alcanzarías ${nuevoTotal} créditos. El máximo es 20.`,
       'error'
     );
     return;
   }
 
+  const estabaEditando = editando !== null;
   cursos = nuevaLista;
+
   guardarDatos();
   mostrarCursos();
 
   mostrarMensaje(
-    editando === null
-      ? 'Curso agregado correctamente.'
-      : 'Curso actualizado correctamente.',
+    estabaEditando ? 'Curso actualizado correctamente.' : 'Curso agregado correctamente.',
     'success'
   );
 
@@ -580,24 +791,20 @@ form.addEventListener('submit', (evento) => {
 
 function prepararEdicion(indice) {
   editando = indice;
-
   nombreInput.value = cursos[indice].nombre;
   creditosInput.value = cursos[indice].creditos;
 
-  document.getElementById('formTitle').textContent =
-    'Actualizar curso';
+  document.getElementById('formTitle').textContent = 'Actualizar curso';
+  document.getElementById('submitBtn').textContent = 'Guardar cambios';
 
-  document.getElementById('submitBtn').textContent =
-    'Guardar cambios';
-
+  mostrarMensaje('Modifica los datos y guarda los cambios.');
   nombreInput.focus();
 }
 
 function eliminarCurso(indice) {
   const eliminado = cursos[indice].nombre;
 
-  if (!confirm(`¿Deseas eliminar el curso "${eliminado}"?`))
-    return;
+  if (!confirm(`¿Deseas eliminar "${eliminado}"?`)) return;
 
   cursos.splice(indice, 1);
 
@@ -609,20 +816,18 @@ function eliminarCurso(indice) {
 
   guardarDatos();
   mostrarCursos();
-
   mostrarMensaje(`Se eliminó "${eliminado}".`, 'success');
 }
 
-// ABRIR REGISTRO DE NOTAS
+// REGISTRO DE NOTAS
 
 function abrirNotas(indice) {
   cursoActual = indice;
-
   const curso = cursos[indice];
 
   document.getElementById('notesPanel').classList.remove('hidden');
   document.getElementById('cursoSeleccionado').textContent =
-    `Curso seleccionado: ${curso.nombre} (${curso.creditos} créditos)`;
+    `ASIGNATURA: ${curso.nombre} · ${curso.creditos} CRÉDITOS`;
 
   const notas = curso.notas;
 
@@ -636,15 +841,16 @@ function abrirNotas(indice) {
   };
 
   Object.keys(pesos).forEach(componente => {
-    document.getElementById('peso' + componente).value =
-      pesos[componente];
+    document.getElementById('peso' + componente).value = pesos[componente];
   });
 
+  document.getElementById('mensajeNotas').textContent = '';
   actualizarSumaPesos();
   mostrarResultado();
 
   document.getElementById('notesPanel').scrollIntoView({
-    behavior: 'smooth'
+    behavior: 'smooth',
+    block: 'start'
   });
 }
 
@@ -652,8 +858,6 @@ function cerrarNotas() {
   document.getElementById('notesPanel').classList.add('hidden');
   cursoActual = null;
 }
-
-// VALIDAR PORCENTAJES
 
 function obtenerPesos() {
   return {
@@ -666,13 +870,24 @@ function obtenerPesos() {
 
 function actualizarSumaPesos() {
   const pesos = obtenerPesos();
+  const campos = ['C1','EP','C2','EF'];
+
+  const validos = campos.every(c =>
+    document.getElementById('peso' + c).value !== '' &&
+    Number.isFinite(pesos[c]) &&
+    pesos[c] >= 0 &&
+    pesos[c] <= 100
+  );
+
   const suma = Object.values(pesos).reduce((a,b) => a+b, 0);
+  const elemento = document.getElementById('sumaPesos');
 
-  document.getElementById('sumaPesos').textContent =
-    `Total de porcentajes: ${suma}%`;
+  elemento.textContent = validos
+    ? `TOTAL DE PONDERACIONES: ${suma}% ${suma === 100 ? '✓' : ''}`
+    : 'Verifica los porcentajes ingresados.';
 
-  document.getElementById('sumaPesos').style.color =
-    suma === 100 ? '#15803d' : '#b91c1c';
+  elemento.style.color = validos && suma === 100
+    ? '#4ade80' : '#fb7185';
 }
 
 ['C1','EP','C2','EF'].forEach(componente => {
@@ -680,7 +895,7 @@ function actualizarSumaPesos() {
     .addEventListener('input', actualizarSumaPesos);
 });
 
-// GUARDAR NOTAS
+// GUARDAR CALIFICACIONES
 
 document.getElementById('guardarNotas').addEventListener('click', () => {
   if (cursoActual === null) return;
@@ -688,14 +903,13 @@ document.getElementById('guardarNotas').addEventListener('click', () => {
   const notas = {};
 
   for (const componente of ['C1','EP','C2','EF']) {
-    const valor = document.getElementById(componente).value;
+    const campo = document.getElementById(componente);
+    const valor = campo.value;
 
     if (valor === '') {
       document.getElementById('mensajeNotas').textContent =
         `Debes ingresar la nota de ${componente}.`;
-
-      document.getElementById('mensajeNotas').className =
-        'message error';
+      document.getElementById('mensajeNotas').className = 'message error';
       return;
     }
 
@@ -704,9 +918,7 @@ document.getElementById('guardarNotas').addEventListener('click', () => {
     if (!Number.isFinite(nota) || nota < 0 || nota > 20) {
       document.getElementById('mensajeNotas').textContent =
         `La nota de ${componente} debe estar entre 0 y 20.`;
-
-      document.getElementById('mensajeNotas').className =
-        'message error';
+      document.getElementById('mensajeNotas').className = 'message error';
       return;
     }
 
@@ -715,14 +927,15 @@ document.getElementById('guardarNotas').addEventListener('click', () => {
 
   const pesos = obtenerPesos();
 
-  if (Object.values(pesos).some(
-    p => !Number.isFinite(p) || p < 0 || p > 100
+  if (['C1','EP','C2','EF'].some(c =>
+    document.getElementById('peso' + c).value === '' ||
+    !Number.isFinite(pesos[c]) ||
+    pesos[c] < 0 ||
+    pesos[c] > 100
   )) {
     document.getElementById('mensajeNotas').textContent =
       'Los porcentajes deben estar entre 0 y 100.';
-
-    document.getElementById('mensajeNotas').className =
-      'message error';
+    document.getElementById('mensajeNotas').className = 'message error';
     return;
   }
 
@@ -730,15 +943,12 @@ document.getElementById('guardarNotas').addEventListener('click', () => {
 
   if (suma !== 100) {
     document.getElementById('mensajeNotas').textContent =
-      'Los porcentajes deben sumar exactamente 100%.';
-
-    document.getElementById('mensajeNotas').className =
-      'message error';
+      'Las ponderaciones deben sumar exactamente 100%.';
+    document.getElementById('mensajeNotas').className = 'message error';
     return;
   }
 
   notas.pesos = pesos;
-
   cursos[cursoActual].notas = notas;
 
   guardarDatos();
@@ -746,13 +956,12 @@ document.getElementById('guardarNotas').addEventListener('click', () => {
   mostrarResultado();
 
   document.getElementById('mensajeNotas').textContent =
-    'Calificaciones guardadas correctamente.';
+    '✦ Calificaciones guardadas correctamente.';
 
-  document.getElementById('mensajeNotas').className =
-    'message success';
+  document.getElementById('mensajeNotas').className = 'message success';
 });
 
-// MOSTRAR RESULTADO
+// RESULTADO ACADÉMICO
 
 function mostrarResultado() {
   const resultado = document.getElementById('resultado');
@@ -763,8 +972,8 @@ function mostrarResultado() {
 
   if (!notas) {
     resultado.innerHTML = `
-      <h3>Resultado académico</h3>
-      <p>Ingresa todas las notas para calcular el promedio final.</p>`;
+      <h3>03 / Resultado académico</h3>
+      <p>Ingresa las notas para calcular el promedio final.</p>`;
     return;
   }
 
@@ -772,39 +981,32 @@ function mostrarResultado() {
 
   if (promedio === null) {
     resultado.innerHTML = `
-      <h3>Resultado académico</h3>
-      <p>Verifica que los porcentajes sumen 100%.</p>`;
+      <h3>03 / Resultado académico</h3>
+      <p>Verifica las ponderaciones para calcular el resultado.</p>`;
     return;
   }
 
-  const notaPublicada = Math.round(promedio);
+  const notaPublicada = Math.floor(promedio + 0.5);
   const aprobado = promedio >= NOTA_MINIMA;
 
   resultado.innerHTML = `
-    <h3>Resultado académico</h3>
-
-    <p>Promedio ponderado:
-      <strong>${promedio.toFixed(2)}</strong>
-    </p>
-
-    <p>Nota final publicada:
-      <strong>${notaPublicada}</strong>
-    </p>
-
+    <h3>03 / Resultado académico</h3>
+    <p>Promedio ponderado:</p>
+    <strong>${promedio.toFixed(2)}</strong>
+    <p>Nota final publicada:</p>
+    <strong>${notaPublicada}</strong>
+    <br>
     <span class="status ${aprobado ? 'aprobado' : 'desaprobado'}">
-      ${aprobado ? 'APROBADO' : 'DESAPROBADO'}
+      ${aprobado ? '✦ APROBADO' : '✕ DESAPROBADO'}
     </span>
-
     <p class="hint">
       ${aprobado
-        ? '¡Felicitaciones! Alcanzaste la nota mínima aprobatoria.'
-        : 'No alcanzaste la nota mínima aprobatoria de 10.50.'}
-    </p>
-  `;
+        ? 'Has alcanzado la nota mínima aprobatoria.'
+        : 'No has alcanzado la nota mínima aprobatoria de 10.50.'}
+    </p>`;
 }
 
 mostrarCursos();
-
 </script>
 </body>
 </html>
