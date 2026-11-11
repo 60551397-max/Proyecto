@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestor de matrícula de cursos</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; font-family: Arial, sans-serif;
+    background: #f1f5f9; color: #172033; padding: 28px 16px;
+  }
+  .container { max-width: 920px; margin: auto; }
+  header { margin-bottom: 22px; }
+  h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 34px); }
+  header p { margin: 0; color: #64748b; }
+  .panel {
+    background: white; border: 1px solid #e2e8f0; border-radius: 16px;
+    padding: 22px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(15,23,42,.05);
+  }
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stat { background: #f8fafc; border-radius: 12px; padding: 16px; }
+  .stat span { display: block; color: #64748b; font-size: 13px; margin-bottom: 7px; }
+  .stat strong { font-size: 25px; }
+  .progress { height: 9px; background: #e2e8f0; border-radius: 20px; overflow: hidden; margin-top: 15px; }
+  .progress > div { height: 100%; width: 0; background: #2563eb; transition: width .2s; }
+  h2 { font-size: 19px; margin: 0 0 16px; }
+  form { display: grid; grid-template-columns: 1fr 150px auto; gap: 10px; }
+  input {
+    width: 100%; border: 1px solid #cbd5e1; border-radius: 9px;
+    padding: 12px; font-size: 15px; outline: none;
+  }
+  input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px #dbeafe; }
+  button {
+    border: 0; border-radius: 9px; padding: 11px 15px; font-weight: 700;
+    cursor: pointer; font-size: 14px;
+  }
+  .primary { background: #2563eb; color: white; }
+  .secondary { background: #e2e8f0; color: #1e293b; }
+  .danger { background: #fee2e2; color: #b91c1c; }
+  .actions { display: flex; gap: 7px; flex-wrap: wrap; }
+  .message { margin-top: 12px; min-height: 20px; font-size: 14px; }
+  .message.error { color: #b91c1c; }
+  .message.success { color: #15803d; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 13px 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+  th { color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  td:last-child { width: 160px; }
+  .empty { text-align: center; color: #64748b; padding: 28px 10px; }
+  .hint { color: #64748b; font-size: 13px; margin: 12px 0 0; }
+  @media (max-width: 650px) {
+    form { grid-template-columns: 1fr 1fr; }
+    form input:first-child { grid-column: 1 / -1; }
+    form button { grid-column: 1 / -1; }
+    .summary { grid-template-columns: 1fr; }
+    td:last-child { width: auto; }
+    th, td { padding: 10px 6px; font-size: 13px; }
+    .actions button { padding: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Gestor de matrícula de cursos</h1>
+    <p>Agrega, consulta, actualiza y elimina cursos. El límite permitido es de 20 créditos.</p>
+  </header>
+
+  <section class="panel">
+    <div class="summary">
+      <div class="stat"><span>Cursos matriculados</span><strong id="totalCursos">0</strong></div>
+      <div class="stat"><span>Créditos acumulados</span><strong id="totalCreditos">0 / 20</strong></div>
+      <div class="stat"><span>Créditos disponibles</span><strong id="disponibles">20</strong></div>
+    </div>
+    <div class="progress"><div id="barra"></div></div>
+  </section>
+
+  <section class="panel">
+    <h2 id="formTitle">Agregar un curso</h2>
+    <form id="courseForm">
+      <input id="nombre" type="text" placeholder="Nombre del curso" maxlength="70" required>
+      <input id="creditos" type="number" placeholder="Créditos" min="1" max="20" step="1" required>
+      <button class="primary" id="submitBtn" type="submit">Agregar curso</button>
+    </form>
+    <div class="message" id="mensaje" role="status" aria-live="polite"></div>
+    <p class="hint">Al actualizar un curso, el sistema vuelve a calcular los créditos antes de guardar el cambio.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Lista de cursos</h2>
+    <table>
+      <thead><tr><th>N.º</th><th>Curso</th><th>Créditos</th><th>Acciones</th></tr></thead>
+      <tbody id="courseList">
+        <tr><td colspan="4" class="empty">Todavía no hay cursos matriculados.</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<script>
+  const LIMITE_CREDITOS = 20;
+  let cursos = [];
+  let editando = null;
+
+  const form = document.getElementById('courseForm');
+  const nombreInput = document.getElementById('nombre');
+  const creditosInput = document.getElementById('creditos');
+  const mensaje = document.getElementById('mensaje');
+
+  function totalDeCreditos(lista = cursos) {
+    return lista.reduce((total, curso) => total + curso.creditos, 0);
+  }
+
+  function mostrarMensaje(texto, tipo = '') {
+    mensaje.textContent = texto;
+    mensaje.className = 'message ' + tipo;
+  }
+
+  function actualizarResumen() {
+    const total = totalDeCreditos();
+    document.getElementById('totalCursos').textContent = cursos.length;
+    document.getElementById('totalCreditos').textContent = `${total} / ${LIMITE_CREDITOS}`;
+    document.getElementById('disponibles').textContent = LIMITE_CREDITOS - total;
+    document.getElementById('barra').style.width = `${Math.min(total / LIMITE_CREDITOS * 100, 100)}%`;
+  }
+
+  function mostrarCursos() {
+    const tbody = document.getElementById('courseList');
+    tbody.innerHTML = '';
+
+    if (cursos.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty">Todavía no hay cursos matriculados.</td></tr>';
+    } else {
+      cursos.forEach((curso, indice) => {
+        const fila = document.createElement('tr');
+
+        const numero = document.createElement('td');
+        numero.textContent = indice + 1;
+
+        const nombre = document.createElement('td');
+        nombre.textContent = curso.nombre;
+
+        const creditos = document.createElement('td');
+        creditos.textContent = `${curso.creditos} créditos`;
+
+        const acciones = document.createElement('td');
+        const contenedor = document.createElement('div');
+        contenedor.className = 'actions';
+
+        const editar = document.createElement('button');
+        editar.className = 'secondary';
+        editar.textContent = 'Editar';
+        editar.addEventListener('click', () => prepararEdicion(indice));
+
+        const eliminar = document.createElement('button');
+        eliminar.className = 'danger';
+        eliminar.textContent = 'Eliminar';
+        eliminar.addEventListener('click', () => eliminarCurso(indice));
+
+        contenedor.append(editar, eliminar);
+        acciones.appendChild(contenedor);
+        fila.append(numero, nombre, creditos, acciones);
+        tbody.appendChild(fila);
+      });
+    }
+    actualizarResumen();
+  }
+
+  function limpiarFormulario() {
+    form.reset();
+    editando = null;
+    document.getElementById('formTitle').textContent = 'Agregar un curso';
+    document.getElementById('submitBtn').textContent = 'Agregar curso';
+  }
+
+  form.addEventListener('submit', (evento) => {
+    evento.preventDefault();
+    const nombre = nombreInput.value.trim();
+    const creditos = Number(creditosInput.value);
+
+    if (!nombre) {
+      mostrarMensaje('Escribe el nombre del curso.', 'error');
+      return;
+    }
+    if (!Number.isInteger(creditos) || creditos < 1) {
+      mostrarMensaje('Los créditos deben ser un número entero mayor que cero.', 'error');
+      return;
+    }
+
+    const nuevaLista = [...cursos];
+    if (editando === null) {
+      nuevaLista.push({ nombre, creditos });
+    } else {
+      nuevaLista[editando] = { nombre, creditos };
+    }
+
+    const nuevoTotal = totalDeCreditos(nuevaLista);
+    if (nuevoTotal > LIMITE_CREDITOS) {
+      mostrarMensaje(`No puedes matricularte: alcanzarías ${nuevoTotal} créditos y el máximo permitido es 20.`, 'error');
+      return;
+    }
+
+    cursos = nuevaLista;
+    mostrarCursos();
+    mostrarMensaje(editando === null ? 'Curso agregado correctamente.' : 'Curso actualizado correctamente.', 'success');
+    limpiarFormulario();
+  });
+
+  function prepararEdicion(indice) {
+    editando = indice;
+    nombreInput.value = cursos[indice].nombre;
+    creditosInput.value = cursos[indice].creditos;
+    document.getElementById('formTitle').textContent = 'Actualizar curso';
+    document.getElementById('submitBtn').textContent = 'Guardar cambios';
+    mostrarMensaje('Modifica los datos y presiona «Guardar cambios».');
+    nombreInput.focus();
+  }
+
+  function eliminarCurso(indice) {
+    const eliminado = cursos[indice].nombre;
+    cursos.splice(indice, 1);
+    if (editando === indice) limpiarFormulario();
+    else if (editando !== null && editando > indice) editando--;
+    mostrarCursos();
+    mostrarMensaje(`Se eliminó "${eliminado}".`, 'success');
+  }
+
+  mostrarCursos();
+</script>
+</body>
+</html>
