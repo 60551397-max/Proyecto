@@ -1,231 +1,810 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestor de matrícula de cursos</title>
+<title>Gestor de matrícula y seguimiento académico</title>
+
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100vh; font-family: Arial, sans-serif;
-    background: #f1f5f9; color: #172033; padding: 28px 16px;
-  }
-  .container { max-width: 920px; margin: auto; }
-  header { margin-bottom: 22px; }
-  h1 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 34px); }
-  header p { margin: 0; color: #64748b; }
-  .panel {
-    background: white; border: 1px solid #e2e8f0; border-radius: 16px;
-    padding: 22px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(15,23,42,.05);
-  }
-  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .stat { background: #f8fafc; border-radius: 12px; padding: 16px; }
-  .stat span { display: block; color: #64748b; font-size: 13px; margin-bottom: 7px; }
-  .stat strong { font-size: 25px; }
-  .progress { height: 9px; background: #e2e8f0; border-radius: 20px; overflow: hidden; margin-top: 15px; }
-  .progress > div { height: 100%; width: 0; background: #2563eb; transition: width .2s; }
-  h2 { font-size: 19px; margin: 0 0 16px; }
-  form { display: grid; grid-template-columns: 1fr 150px auto; gap: 10px; }
-  input {
-    width: 100%; border: 1px solid #cbd5e1; border-radius: 9px;
-    padding: 12px; font-size: 15px; outline: none;
-  }
-  input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px #dbeafe; }
-  button {
-    border: 0; border-radius: 9px; padding: 11px 15px; font-weight: 700;
-    cursor: pointer; font-size: 14px;
-  }
-  .primary { background: #2563eb; color: white; }
-  .secondary { background: #e2e8f0; color: #1e293b; }
-  .danger { background: #fee2e2; color: #b91c1c; }
-  .actions { display: flex; gap: 7px; flex-wrap: wrap; }
-  .message { margin-top: 12px; min-height: 20px; font-size: 14px; }
-  .message.error { color: #b91c1c; }
-  .message.success { color: #15803d; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 13px 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-  th { color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
-  td:last-child { width: 160px; }
-  .empty { text-align: center; color: #64748b; padding: 28px 10px; }
-  .hint { color: #64748b; font-size: 13px; margin: 12px 0 0; }
-  @media (max-width: 650px) {
-    form { grid-template-columns: 1fr 1fr; }
-    form input:first-child { grid-column: 1 / -1; }
-    form button { grid-column: 1 / -1; }
-    .summary { grid-template-columns: 1fr; }
-    td:last-child { width: auto; }
-    th, td { padding: 10px 6px; font-size: 13px; }
-    .actions button { padding: 8px; }
-  }
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #172033;
+  padding: 28px 16px;
+}
+
+.container { max-width: 1000px; margin: auto; }
+
+header { margin-bottom: 22px; }
+
+h1 { margin: 0 0 8px; font-size: clamp(24px,4vw,34px); }
+
+header p { color: #64748b; }
+
+.panel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 24px rgba(15,23,42,.05);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+}
+
+.stat {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.stat span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+.stat strong { font-size: 25px; }
+
+.progress {
+  height: 9px;
+  background: #e2e8f0;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress div {
+  height: 100%;
+  width: 0;
+  background: #2563eb;
+  transition: width .2s;
+}
+
+h2 { font-size: 19px; margin: 0 0 16px; }
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 150px auto;
+  gap: 10px;
+}
+
+input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  padding: 12px;
+  font-size: 15px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.primary { background: #2563eb; color: white; }
+.secondary { background: #e2e8f0; color: #1e293b; }
+.danger { background: #fee2e2; color: #b91c1c; }
+.notes-btn { background: #dbeafe; color: #1d4ed8; }
+
+.actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.message {
+  margin-top: 12px;
+  min-height: 20px;
+  font-size: 14px;
+}
+
+.message.error { color: #b91c1c; }
+.message.success { color: #15803d; }
+
+table { width: 100%; border-collapse: collapse; }
+
+th, td {
+  padding: 13px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.empty {
+  text-align: center;
+  color: #64748b;
+  padding: 28px 10px;
+}
+
+.hint {
+  color: #64748b;
+  font-size: 13px;
+  margin: 12px 0 0;
+}
+
+.hidden { display: none; }
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.note-field {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.note-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.note-field small {
+  display: block;
+  color: #64748b;
+  margin-top: 5px;
+}
+
+.weights {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.result {
+  background: #f8fafc;
+  padding: 18px;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.result strong { font-size: 27px; }
+
+.status {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.aprobado { background: #dcfce7; color: #15803d; }
+.desaprobado { background: #fee2e2; color: #b91c1c; }
+.pendiente { background: #fef3c7; color: #92400e; }
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+@media(max-width:650px) {
+  form { grid-template-columns: 1fr 1fr; }
+  form input:first-child { grid-column: 1/-1; }
+  form button { grid-column: 1/-1; }
+  .summary { grid-template-columns: 1fr; }
+  .notes-grid, .weights { grid-template-columns: repeat(2,1fr); }
+  table { font-size: 12px; }
+  th,td { padding: 9px 5px; }
+}
 </style>
 </head>
+
 <body>
 <div class="container">
-  <header>
-    <h1>Gestor de matrícula de cursos</h1>
-    <p>Agrega, consulta, actualiza y elimina cursos. El límite permitido es de 20 créditos.</p>
-  </header>
 
-  <section class="panel">
-    <div class="summary">
-      <div class="stat"><span>Cursos matriculados</span><strong id="totalCursos">0</strong></div>
-      <div class="stat"><span>Créditos acumulados</span><strong id="totalCreditos">0 / 20</strong></div>
-      <div class="stat"><span>Créditos disponibles</span><strong id="disponibles">20</strong></div>
+<header>
+  <h1>Gestor de matrícula y seguimiento académico</h1>
+  <p>Administra tus cursos, créditos y calificaciones académicas.</p>
+</header>
+
+<section class="panel">
+  <div class="summary">
+    <div class="stat">
+      <span>Cursos matriculados</span>
+      <strong id="totalCursos">0</strong>
     </div>
-    <div class="progress"><div id="barra"></div></div>
-  </section>
+    <div class="stat">
+      <span>Créditos acumulados</span>
+      <strong id="totalCreditos">0 / 20</strong>
+    </div>
+    <div class="stat">
+      <span>Créditos disponibles</span>
+      <strong id="disponibles">20</strong>
+    </div>
+  </div>
+  <div class="progress"><div id="barra"></div></div>
+</section>
 
-  <section class="panel">
-    <h2 id="formTitle">Agregar un curso</h2>
-    <form id="courseForm">
-      <input id="nombre" type="text" placeholder="Nombre del curso" maxlength="70" required>
-      <input id="creditos" type="number" placeholder="Créditos" min="1" max="20" step="1" required>
-      <button class="primary" id="submitBtn" type="submit">Agregar curso</button>
-    </form>
-    <div class="message" id="mensaje" role="status" aria-live="polite"></div>
-    <p class="hint">Al actualizar un curso, el sistema vuelve a calcular los créditos antes de guardar el cambio.</p>
-  </section>
+<section class="panel">
+  <h2 id="formTitle">Agregar un curso</h2>
 
-  <section class="panel">
-    <h2>Lista de cursos</h2>
+  <form id="courseForm">
+    <input id="nombre" type="text"
+      placeholder="Nombre del curso" maxlength="70" required>
+
+    <input id="creditos" type="number"
+      placeholder="Créditos" min="1" max="20"
+      step="1" required>
+
+    <button class="primary" id="submitBtn" type="submit">
+      Agregar curso
+    </button>
+  </form>
+
+  <div class="message" id="mensaje" role="status"></div>
+</section>
+
+<section class="panel">
+  <h2>Lista de cursos matriculados</h2>
+
+  <div style="overflow-x:auto">
     <table>
-      <thead><tr><th>N.º</th><th>Curso</th><th>Créditos</th><th>Acciones</th></tr></thead>
-      <tbody id="courseList">
-        <tr><td colspan="4" class="empty">Todavía no hay cursos matriculados.</td></tr>
-      </tbody>
+      <thead>
+        <tr>
+          <th>N.º</th>
+          <th>Curso</th>
+          <th>Créditos</th>
+          <th>Promedio</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="courseList"></tbody>
     </table>
-  </section>
+  </div>
+</section>
+
+<!-- SECCIÓN DE NOTAS -->
+
+<section class="panel hidden" id="notesPanel">
+
+  <div class="section-title">
+    <h2>Seguimiento académico</h2>
+    <button class="secondary" onclick="cerrarNotas()">Cerrar</button>
+  </div>
+
+  <p id="cursoSeleccionado"></p>
+
+  <h3>Registro de calificaciones</h3>
+
+  <div class="notes-grid">
+    <div class="note-field">
+      <label for="C1">C1 - Primer consolidado</label>
+      <input type="number" id="C1" min="0" max="20"
+        step="0.01" placeholder="0 - 20">
+    </div>
+
+    <div class="note-field">
+      <label for="EP">EP - Evaluación parcial</label>
+      <input type="number" id="EP" min="0" max="20"
+        step="0.01" placeholder="0 - 20">
+    </div>
+
+    <div class="note-field">
+      <label for="C2">C2 - Segundo consolidado</label>
+      <input type="number" id="C2" min="0" max="20"
+        step="0.01" placeholder="0 - 20">
+    </div>
+
+    <div class="note-field">
+      <label for="EF">EF - Evaluación final</label>
+      <input type="number" id="EF" min="0" max="20"
+        step="0.01" placeholder="0 - 20">
+    </div>
+  </div>
+
+  <h3>Porcentajes de evaluación</h3>
+  <p class="hint">
+    Configura los porcentajes establecidos en el sílabo de tu asignatura.
+    La suma debe ser exactamente 100%.
+  </p>
+
+  <div class="weights">
+    <div class="note-field">
+      <label for="pesoC1">Peso C1 (%)</label>
+      <input type="number" id="pesoC1" min="0" max="100" value="25">
+    </div>
+
+    <div class="note-field">
+      <label for="pesoEP">Peso EP (%)</label>
+      <input type="number" id="pesoEP" min="0" max="100" value="25">
+    </div>
+
+    <div class="note-field">
+      <label for="pesoC2">Peso C2 (%)</label>
+      <input type="number" id="pesoC2" min="0" max="100" value="25">
+    </div>
+
+    <div class="note-field">
+      <label for="pesoEF">Peso EF (%)</label>
+      <input type="number" id="pesoEF" min="0" max="100" value="25">
+    </div>
+  </div>
+
+  <div id="sumaPesos" class="hint">Total de porcentajes: 100%</div>
+
+  <button class="primary" id="guardarNotas">
+    Guardar calificaciones
+  </button>
+
+  <div id="mensajeNotas" class="message"></div>
+
+  <div class="result" id="resultado">
+    <h3>Resultado académico</h3>
+    <p>Ingresa todas las notas para calcular el promedio final.</p>
+  </div>
+
+</section>
+
 </div>
 
 <script>
-  const LIMITE_CREDITOS = 20;
-  let cursos = [];
-  let editando = null;
 
-  const form = document.getElementById('courseForm');
-  const nombreInput = document.getElementById('nombre');
-  const creditosInput = document.getElementById('creditos');
-  const mensaje = document.getElementById('mensaje');
+const LIMITE_CREDITOS = 20;
+const NOTA_MINIMA = 10.50;
 
-  function totalDeCreditos(lista = cursos) {
-    return lista.reduce((total, curso) => total + curso.creditos, 0);
+let cursos = JSON.parse(localStorage.getItem('cursosUC')) || [];
+let editando = null;
+let cursoActual = null;
+
+const form = document.getElementById('courseForm');
+const nombreInput = document.getElementById('nombre');
+const creditosInput = document.getElementById('creditos');
+const mensaje = document.getElementById('mensaje');
+
+function guardarDatos() {
+  localStorage.setItem('cursosUC', JSON.stringify(cursos));
+}
+
+function totalDeCreditos(lista = cursos) {
+  return lista.reduce((total, curso) => total + curso.creditos, 0);
+}
+
+function mostrarMensaje(texto, tipo = '') {
+  mensaje.textContent = texto;
+  mensaje.className = 'message ' + tipo;
+}
+
+function actualizarResumen() {
+  const total = totalDeCreditos();
+
+  document.getElementById('totalCursos').textContent = cursos.length;
+  document.getElementById('totalCreditos').textContent =
+    `${total} / ${LIMITE_CREDITOS}`;
+
+  document.getElementById('disponibles').textContent =
+    LIMITE_CREDITOS - total;
+
+  document.getElementById('barra').style.width =
+    `${Math.min(total / LIMITE_CREDITOS * 100, 100)}%`;
+}
+
+function calcularPromedio(notas) {
+  if (!notas || Object.values(notas).some(n => n === null || n === undefined))
+    return null;
+
+  const sumaPesos =
+    notas.pesos.C1 + notas.pesos.EP +
+    notas.pesos.C2 + notas.pesos.EF;
+
+  if (sumaPesos !== 100) return null;
+
+  const promedio =
+    (notas.C1 * notas.pesos.C1 +
+     notas.EP * notas.pesos.EP +
+     notas.C2 * notas.pesos.C2 +
+     notas.EF * notas.pesos.EF) / 100;
+
+  return promedio;
+}
+
+function obtenerEstado(promedio) {
+  if (promedio === null) return 'Pendiente';
+
+  return promedio >= NOTA_MINIMA
+    ? 'Aprobado'
+    : 'Desaprobado';
+}
+
+function mostrarCursos() {
+  const tbody = document.getElementById('courseList');
+  tbody.innerHTML = '';
+
+  if (cursos.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="empty">
+          Todavía no hay cursos matriculados.
+        </td>
+      </tr>`;
   }
 
-  function mostrarMensaje(texto, tipo = '') {
-    mensaje.textContent = texto;
-    mensaje.className = 'message ' + tipo;
-  }
+  cursos.forEach((curso, indice) => {
+    const promedio = calcularPromedio(curso.notas);
+    const estado = obtenerEstado(promedio);
 
-  function actualizarResumen() {
-    const total = totalDeCreditos();
-    document.getElementById('totalCursos').textContent = cursos.length;
-    document.getElementById('totalCreditos').textContent = `${total} / ${LIMITE_CREDITOS}`;
-    document.getElementById('disponibles').textContent = LIMITE_CREDITOS - total;
-    document.getElementById('barra').style.width = `${Math.min(total / LIMITE_CREDITOS * 100, 100)}%`;
-  }
+    const fila = document.createElement('tr');
 
-  function mostrarCursos() {
-    const tbody = document.getElementById('courseList');
-    tbody.innerHTML = '';
+    const datos = [
+      indice + 1,
+      curso.nombre,
+      `${curso.creditos} créditos`,
+      promedio === null ? '--' : promedio.toFixed(2),
+      estado
+    ];
 
-    if (cursos.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="empty">Todavía no hay cursos matriculados.</td></tr>';
-    } else {
-      cursos.forEach((curso, indice) => {
-        const fila = document.createElement('tr');
+    datos.forEach((dato, posicion) => {
+      const td = document.createElement('td');
+      td.textContent = dato;
 
-        const numero = document.createElement('td');
-        numero.textContent = indice + 1;
+      if (posicion === 4) {
+        td.style.color =
+          estado === 'Aprobado' ? '#15803d' :
+          estado === 'Desaprobado' ? '#b91c1c' : '#92400e';
+        td.style.fontWeight = 'bold';
+      }
 
-        const nombre = document.createElement('td');
-        nombre.textContent = curso.nombre;
+      fila.appendChild(td);
+    });
 
-        const creditos = document.createElement('td');
-        creditos.textContent = `${curso.creditos} créditos`;
+    const acciones = document.createElement('td');
+    const contenedor = document.createElement('div');
+    contenedor.className = 'actions';
 
-        const acciones = document.createElement('td');
-        const contenedor = document.createElement('div');
-        contenedor.className = 'actions';
+    const notasBtn = document.createElement('button');
+    notasBtn.className = 'notes-btn';
+    notasBtn.textContent = 'Notas';
+    notasBtn.onclick = () => abrirNotas(indice);
 
-        const editar = document.createElement('button');
-        editar.className = 'secondary';
-        editar.textContent = 'Editar';
-        editar.addEventListener('click', () => prepararEdicion(indice));
+    const editar = document.createElement('button');
+    editar.className = 'secondary';
+    editar.textContent = 'Editar';
+    editar.onclick = () => prepararEdicion(indice);
 
-        const eliminar = document.createElement('button');
-        eliminar.className = 'danger';
-        eliminar.textContent = 'Eliminar';
-        eliminar.addEventListener('click', () => eliminarCurso(indice));
+    const eliminar = document.createElement('button');
+    eliminar.className = 'danger';
+    eliminar.textContent = 'Eliminar';
+    eliminar.onclick = () => eliminarCurso(indice);
 
-        contenedor.append(editar, eliminar);
-        acciones.appendChild(contenedor);
-        fila.append(numero, nombre, creditos, acciones);
-        tbody.appendChild(fila);
-      });
-    }
-    actualizarResumen();
-  }
-
-  function limpiarFormulario() {
-    form.reset();
-    editando = null;
-    document.getElementById('formTitle').textContent = 'Agregar un curso';
-    document.getElementById('submitBtn').textContent = 'Agregar curso';
-  }
-
-  form.addEventListener('submit', (evento) => {
-    evento.preventDefault();
-    const nombre = nombreInput.value.trim();
-    const creditos = Number(creditosInput.value);
-
-    if (!nombre) {
-      mostrarMensaje('Escribe el nombre del curso.', 'error');
-      return;
-    }
-    if (!Number.isInteger(creditos) || creditos < 1) {
-      mostrarMensaje('Los créditos deben ser un número entero mayor que cero.', 'error');
-      return;
-    }
-
-    const nuevaLista = [...cursos];
-    if (editando === null) {
-      nuevaLista.push({ nombre, creditos });
-    } else {
-      nuevaLista[editando] = { nombre, creditos };
-    }
-
-    const nuevoTotal = totalDeCreditos(nuevaLista);
-    if (nuevoTotal > LIMITE_CREDITOS) {
-      mostrarMensaje(`No puedes matricularte: alcanzarías ${nuevoTotal} créditos y el máximo permitido es 20.`, 'error');
-      return;
-    }
-
-    cursos = nuevaLista;
-    mostrarCursos();
-    mostrarMensaje(editando === null ? 'Curso agregado correctamente.' : 'Curso actualizado correctamente.', 'success');
-    limpiarFormulario();
+    contenedor.append(notasBtn, editar, eliminar);
+    acciones.appendChild(contenedor);
+    fila.appendChild(acciones);
+    tbody.appendChild(fila);
   });
 
-  function prepararEdicion(indice) {
-    editando = indice;
-    nombreInput.value = cursos[indice].nombre;
-    creditosInput.value = cursos[indice].creditos;
-    document.getElementById('formTitle').textContent = 'Actualizar curso';
-    document.getElementById('submitBtn').textContent = 'Guardar cambios';
-    mostrarMensaje('Modifica los datos y presiona «Guardar cambios».');
-    nombreInput.focus();
+  actualizarResumen();
+}
+
+function limpiarFormulario() {
+  form.reset();
+  editando = null;
+
+  document.getElementById('formTitle').textContent =
+    'Agregar un curso';
+
+  document.getElementById('submitBtn').textContent =
+    'Agregar curso';
+}
+
+form.addEventListener('submit', (evento) => {
+  evento.preventDefault();
+
+  const nombre = nombreInput.value.trim();
+  const creditos = Number(creditosInput.value);
+
+  if (!nombre) {
+    mostrarMensaje('Escribe el nombre del curso.', 'error');
+    return;
   }
 
-  function eliminarCurso(indice) {
-    const eliminado = cursos[indice].nombre;
-    cursos.splice(indice, 1);
-    if (editando === indice) limpiarFormulario();
-    else if (editando !== null && editando > indice) editando--;
-    mostrarCursos();
-    mostrarMensaje(`Se eliminó "${eliminado}".`, 'success');
+  if (!Number.isInteger(creditos) || creditos < 1 || creditos > 20) {
+    mostrarMensaje('Los créditos deben ser un entero entre 1 y 20.', 'error');
+    return;
   }
 
+  const nuevaLista = [...cursos];
+
+  if (editando === null) {
+    nuevaLista.push({
+      nombre,
+      creditos,
+      notas: null
+    });
+  } else {
+    nuevaLista[editando] = {
+      ...cursos[editando],
+      nombre,
+      creditos
+    };
+  }
+
+  const nuevoTotal = totalDeCreditos(nuevaLista);
+
+  if (nuevoTotal > LIMITE_CREDITOS) {
+    mostrarMensaje(
+      `Alcanzarías ${nuevoTotal} créditos. El máximo permitido es 20.`,
+      'error'
+    );
+    return;
+  }
+
+  cursos = nuevaLista;
+  guardarDatos();
   mostrarCursos();
+
+  mostrarMensaje(
+    editando === null
+      ? 'Curso agregado correctamente.'
+      : 'Curso actualizado correctamente.',
+    'success'
+  );
+
+  limpiarFormulario();
+});
+
+function prepararEdicion(indice) {
+  editando = indice;
+
+  nombreInput.value = cursos[indice].nombre;
+  creditosInput.value = cursos[indice].creditos;
+
+  document.getElementById('formTitle').textContent =
+    'Actualizar curso';
+
+  document.getElementById('submitBtn').textContent =
+    'Guardar cambios';
+
+  nombreInput.focus();
+}
+
+function eliminarCurso(indice) {
+  const eliminado = cursos[indice].nombre;
+
+  if (!confirm(`¿Deseas eliminar el curso "${eliminado}"?`))
+    return;
+
+  cursos.splice(indice, 1);
+
+  if (editando === indice) limpiarFormulario();
+  else if (editando !== null && editando > indice) editando--;
+
+  if (cursoActual === indice) cerrarNotas();
+  else if (cursoActual !== null && cursoActual > indice) cursoActual--;
+
+  guardarDatos();
+  mostrarCursos();
+
+  mostrarMensaje(`Se eliminó "${eliminado}".`, 'success');
+}
+
+// ABRIR REGISTRO DE NOTAS
+
+function abrirNotas(indice) {
+  cursoActual = indice;
+
+  const curso = cursos[indice];
+
+  document.getElementById('notesPanel').classList.remove('hidden');
+  document.getElementById('cursoSeleccionado').textContent =
+    `Curso seleccionado: ${curso.nombre} (${curso.creditos} créditos)`;
+
+  const notas = curso.notas;
+
+  ['C1','EP','C2','EF'].forEach(componente => {
+    document.getElementById(componente).value =
+      notas ? notas[componente] ?? '' : '';
+  });
+
+  const pesos = notas?.pesos || {
+    C1: 25, EP: 25, C2: 25, EF: 25
+  };
+
+  Object.keys(pesos).forEach(componente => {
+    document.getElementById('peso' + componente).value =
+      pesos[componente];
+  });
+
+  actualizarSumaPesos();
+  mostrarResultado();
+
+  document.getElementById('notesPanel').scrollIntoView({
+    behavior: 'smooth'
+  });
+}
+
+function cerrarNotas() {
+  document.getElementById('notesPanel').classList.add('hidden');
+  cursoActual = null;
+}
+
+// VALIDAR PORCENTAJES
+
+function obtenerPesos() {
+  return {
+    C1: Number(document.getElementById('pesoC1').value),
+    EP: Number(document.getElementById('pesoEP').value),
+    C2: Number(document.getElementById('pesoC2').value),
+    EF: Number(document.getElementById('pesoEF').value)
+  };
+}
+
+function actualizarSumaPesos() {
+  const pesos = obtenerPesos();
+  const suma = Object.values(pesos).reduce((a,b) => a+b, 0);
+
+  document.getElementById('sumaPesos').textContent =
+    `Total de porcentajes: ${suma}%`;
+
+  document.getElementById('sumaPesos').style.color =
+    suma === 100 ? '#15803d' : '#b91c1c';
+}
+
+['C1','EP','C2','EF'].forEach(componente => {
+  document.getElementById('peso' + componente)
+    .addEventListener('input', actualizarSumaPesos);
+});
+
+// GUARDAR NOTAS
+
+document.getElementById('guardarNotas').addEventListener('click', () => {
+  if (cursoActual === null) return;
+
+  const notas = {};
+
+  for (const componente of ['C1','EP','C2','EF']) {
+    const valor = document.getElementById(componente).value;
+
+    if (valor === '') {
+      document.getElementById('mensajeNotas').textContent =
+        `Debes ingresar la nota de ${componente}.`;
+
+      document.getElementById('mensajeNotas').className =
+        'message error';
+      return;
+    }
+
+    const nota = Number(valor);
+
+    if (!Number.isFinite(nota) || nota < 0 || nota > 20) {
+      document.getElementById('mensajeNotas').textContent =
+        `La nota de ${componente} debe estar entre 0 y 20.`;
+
+      document.getElementById('mensajeNotas').className =
+        'message error';
+      return;
+    }
+
+    notas[componente] = nota;
+  }
+
+  const pesos = obtenerPesos();
+
+  if (Object.values(pesos).some(
+    p => !Number.isFinite(p) || p < 0 || p > 100
+  )) {
+    document.getElementById('mensajeNotas').textContent =
+      'Los porcentajes deben estar entre 0 y 100.';
+
+    document.getElementById('mensajeNotas').className =
+      'message error';
+    return;
+  }
+
+  const suma = Object.values(pesos).reduce((a,b) => a+b, 0);
+
+  if (suma !== 100) {
+    document.getElementById('mensajeNotas').textContent =
+      'Los porcentajes deben sumar exactamente 100%.';
+
+    document.getElementById('mensajeNotas').className =
+      'message error';
+    return;
+  }
+
+  notas.pesos = pesos;
+
+  cursos[cursoActual].notas = notas;
+
+  guardarDatos();
+  mostrarCursos();
+  mostrarResultado();
+
+  document.getElementById('mensajeNotas').textContent =
+    'Calificaciones guardadas correctamente.';
+
+  document.getElementById('mensajeNotas').className =
+    'message success';
+});
+
+// MOSTRAR RESULTADO
+
+function mostrarResultado() {
+  const resultado = document.getElementById('resultado');
+
+  if (cursoActual === null) return;
+
+  const notas = cursos[cursoActual].notas;
+
+  if (!notas) {
+    resultado.innerHTML = `
+      <h3>Resultado académico</h3>
+      <p>Ingresa todas las notas para calcular el promedio final.</p>`;
+    return;
+  }
+
+  const promedio = calcularPromedio(notas);
+
+  if (promedio === null) {
+    resultado.innerHTML = `
+      <h3>Resultado académico</h3>
+      <p>Verifica que los porcentajes sumen 100%.</p>`;
+    return;
+  }
+
+  const notaPublicada = Math.round(promedio);
+  const aprobado = promedio >= NOTA_MINIMA;
+
+  resultado.innerHTML = `
+    <h3>Resultado académico</h3>
+
+    <p>Promedio ponderado:
+      <strong>${promedio.toFixed(2)}</strong>
+    </p>
+
+    <p>Nota final publicada:
+      <strong>${notaPublicada}</strong>
+    </p>
+
+    <span class="status ${aprobado ? 'aprobado' : 'desaprobado'}">
+      ${aprobado ? 'APROBADO' : 'DESAPROBADO'}
+    </span>
+
+    <p class="hint">
+      ${aprobado
+        ? '¡Felicitaciones! Alcanzaste la nota mínima aprobatoria.'
+        : 'No alcanzaste la nota mínima aprobatoria de 10.50.'}
+    </p>
+  `;
+}
+
+mostrarCursos();
+
 </script>
 </body>
 </html>
